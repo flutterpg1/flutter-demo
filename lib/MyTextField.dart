@@ -15,6 +15,7 @@ class MyTextfield extends StatelessWidget {
         controller: controller,
         validator: (value){
           if(value.isEmpty) return 'Mandatory';
+          return '';
         },
         decoration: InputDecoration(
             hintText: labelText1,
