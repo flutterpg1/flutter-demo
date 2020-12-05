@@ -41,3 +41,4 @@ app.*.symbols
 app.*.map.json
 #node 
 server/node_modules
+package-lock.json
