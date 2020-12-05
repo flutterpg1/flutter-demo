@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:master_detail/bloc/bloc.dart';
 import 'package:master_detail/data/item.dart';
 import 'package:master_detail/ui/detail.dart';
+import 'package:master_detail/ui/userform.dart';
 
 class Master extends StatefulWidget {
   @override
@@ -61,6 +62,8 @@ class _MasterState extends State<Master> {
       "name $elementCount",
       "This is the detail for element $elementCount",
     );
+    //  final route = MaterialPageRoute(builder: (context) => UserForm());
+    //   Navigator.push(context, route);
     _bloc.add(AddItemEvent(newItem));
     elementCount++;
   }
