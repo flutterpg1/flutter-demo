@@ -1,0 +1,69 @@
+{
+  "project_info": {
+    "project_number": "15017019228",
+    "firebase_url": "https://petmedical-9deaf-default-rtdb.firebaseio.com",
+    "project_id": "petmedical-9deaf",
+    "storage_bucket": "petmedical-9deaf.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15017019228:android:e6b33083a344f74545a399",
+        "android_client_info": {
+          "package_name": "com.example.myapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15017019228-1d2f39nvrqt1oqfsea730g4n6tq4mn81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDeI4TzqABROTLe0w2cqSKzTpeMKnZvIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15017019228-1d2f39nvrqt1oqfsea730g4n6tq4mn81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:15017019228:android:f960460883c8b59045a399",
+        "android_client_info": {
+          "package_name": "com.raywenderlich.pet_medical"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "15017019228-1d2f39nvrqt1oqfsea730g4n6tq4mn81.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBDeI4TzqABROTLe0w2cqSKzTpeMKnZvIY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "15017019228-1d2f39nvrqt1oqfsea730g4n6tq4mn81.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
