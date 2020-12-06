@@ -8,10 +8,21 @@ class Nav2App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      routes: {
-        '/': (context) => HomeScreen(),
-        '/details': (context) => DetailScreen('second'),
-        '/third': (context) => DetailScreen('third')
+      onGenerateRoute: (settings) {
+        // Handle '/'
+        if (settings.name == '/') {
+          return MaterialPageRoute(builder: (context) => HomeScreen());
+        }
+
+        // Handle '/details/:id'
+        var uri = Uri.parse(settings.name);
+        if (uri.pathSegments.length == 2 &&
+            uri.pathSegments.first == 'details') {
+          var id = uri.pathSegments[1];
+          return MaterialPageRoute(builder: (context) => DetailScreen(id: id));
+        }
+
+        return MaterialPageRoute(builder: (context) => UnknownScreen());
       },
     );
   }
@@ -28,7 +39,7 @@ class HomeScreen extends StatelessWidget {
           onPressed: () {
             Navigator.pushNamed(
               context,
-              '/details',
+              '/details/1',
             );
           },
         ),
@@ -38,25 +49,41 @@ class HomeScreen extends StatelessWidget {
 }
 
 class DetailScreen extends StatelessWidget {
-  DetailScreen(this.screenName);
-  String screenName;
+  String id;
+
+  DetailScreen({
+    this.id,
+  });
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
       body: Center(
-        child: FlatButton(
-          child: Text(this.screenName),
-          onPressed: () {
-            if (this.screenName == 'second') {
-              Navigator.pushNamed(
-                context,
-                '/third',
-              );
-            }else
-            Navigator.pop(context);
-          },
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text('Viewing details for item $id'),
+            FlatButton(
+              child: Text('Pop!'),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
         ),
+      ),
+    );
+  }
+}
+
+class UnknownScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(),
+      body: Center(
+        child: Text('404!'),
       ),
     );
   }

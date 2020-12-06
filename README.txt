@@ -1,3 +1,2 @@
-MaterialApp and CupertinoApp already use a Navigator under the hood. 
-You can access the navigator using Navigator.of() or display a new screen using Navigator.push(), 
-and return to the previous screen with Navigator.pop():
+settings is an instance of RouteSettings.
+ The name and arguments fields are the values that were provided when Navigator.pushNamed was called, or what initialRoute is set to.
