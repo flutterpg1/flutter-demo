@@ -1,196 +1,199 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'dynamicWidget.dart';
+import 'package:pet_medical/PetDetails.dart';
+import 'package:pet_medical/repository/DataRepository.dart';
+import 'package:pet_medical/utils/pets_icons.dart';
 
-void main() {
-  runApp(SampleApp());
-}
+import 'models/pets.dart';
 
-class SampleApp extends StatelessWidget {
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sample App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SampleAppPage(),
-    );
-  }
-}
+void main() => runApp(MyApp());
 
-class SampleAppPage extends StatefulWidget {
-  SampleAppPage({Key key}) : super(key: key);
-
-  @override
-  _SampleAppPageState createState() => _SampleAppPageState();
-}
-
-class _SampleAppPageState extends State<SampleAppPage> {
-  List<DynamicWidget> dynamicList = [];
-
-  List<String> price = [];
-
-  List<String> Product = [];
-  addDynamic() {
-    // if (Product.length != 0) {
-    //   floatingIcon = new Icon(Icons.add);
-    // }
-    setState(() {});
-    if (dynamicList.length >= 10) {
-      return;
-    }
-    dynamicList.add(new DynamicWidget());
-  }
-  submitData() {
-    // floatingIcon = new Icon(Icons.arrow_back);
-    Product = [];
-    price = [];
-    dynamicList.forEach((widget) => Product.add(widget.product.text));
-    dynamicList.forEach((widget) => price.add(widget.Price.text));
-    setState(() {});
-    print(Product.length);
-    // sendData();
-  }
-
-  Widget submitButton = new Container(
-    child: new RaisedButton(
-      // onPressed:submitData,
-      child: new Padding(
-        padding: new EdgeInsets.all(16.0),
-        child: new Text('Submit Data'),
-      ),
-    ),
-  );
-  @override
-  Widget build(BuildContext context) {
-    Widget dynamicTextField = new Flexible(
-      flex: 2,
-      child: new ListView.builder(
-        itemCount: dynamicList.length,
-        itemBuilder: (_, index) => dynamicList[index],
-      ),
-    );
-    Widget result = new Flexible(
-        flex: 1,
-        child: new Card(
-          child: ListView.builder(
-            itemCount: Product.length,
-            itemBuilder: (_, index) {
-              return new Padding(
-                padding: new EdgeInsets.all(10.0),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Container(
-                      margin: new EdgeInsets.only(left: 10.0),
-                      child: new Text(
-                          "${index + 1} : ${Product[index]}                       ${price[index]}"),
-                    ),
-                    new Divider()
-                  ],
-                ),
-              );
-            },
-          ),
-        ));
-    return new Scaffold(
-      appBar: AppBar(title: Text('Dynamic form')),
-      drawer: Drawer(child: Text('dr'),),
-        body: new Container(
-          child: new Column(children: <Widget>[
-            Product.length == 0 ? dynamicTextField : result,
-            Product.length == 0 ? submitButton : new Container(),
-          ]),
-        ),
-        floatingActionButton: new FloatingActionButton(
-            onPressed: addDynamic, child: new Icon(Icons.add)));
-  }
-}
+const BoldStyle = TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold);
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Fluttereee Demo 123ss',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter11 Demo Home Page'),
-    );
+        title: 'Pet Medical Central',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: HomeList());
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
+class HomeList extends StatefulWidget {
   @override
-  _MyHomePageState createState() => _MyHomePageState();
+  _HomeListState createState() => _HomeListState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _HomeListState extends State<HomeList> {
+  final DataRepository repository = DataRepository();
 
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
-    });
-  }
-
-  final _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
+    return _buildHome(context);
+  }
+
+  Widget _buildHome(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
+        title: Text("Pets"),
       ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
-                  },
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Validate will return true if the form is valid, or false if
-                      // the form is invalid.
-                      if (_formKey.currentState.validate()) {
-                        // Process data.
-                      }
-                    },
-                    child: Text('Submit'),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ]),
-      ),
+      body: StreamBuilder<QuerySnapshot>(
+          stream: repository.getStream(),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) return LinearProgressIndicator();
+
+            return _buildList(context, snapshot.data.documents);
+          }),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
+        onPressed: () {
+          _addPet();
+        },
+        tooltip: 'Add Pet',
         child: Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
+
+  void _addPet() {
+    AlertDialogWidget dialogWidget = AlertDialogWidget();
+    showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+              title: const Text("Add Pet"),
+              content: dialogWidget,
+              actions: <Widget>[
+                FlatButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Cancel")),
+                FlatButton(
+                    onPressed: () {
+                      Pet newPet = Pet(dialogWidget.petName, type: dialogWidget.character);
+                      repository.addPet(newPet);
+                      Navigator.of(context).pop();
+                    },
+                    child: Text("Add")),
+              ]);
+        });
+  }
+
+  Widget _buildList(BuildContext context, List<DocumentSnapshot> snapshot) {
+    return ListView(
+      padding: const EdgeInsets.only(top: 20.0),
+      children: snapshot.map((data) => _buildListItem(context, data)).toList(),
+    );
+  }
+
+  Widget _buildListItem(BuildContext context, DocumentSnapshot snapshot) {
+    final pet = Pet.fromSnapshot(snapshot);
+    if (pet == null) {
+      return Container();
+    }
+
+    return Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: InkWell(
+          child: Row(
+            children: <Widget>[
+              Expanded(child: Text(pet.name == null ? "" : pet.name, style: BoldStyle)),
+              _getPetIcon(pet.type)
+            ],
+          ),
+          onTap: () {
+            _navigate(BuildContext context)  {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => PetDetails(pet),
+                  ));
+            }
+
+            _navigate(context);
+          },
+          highlightColor: Colors.green,
+          splashColor: Colors.blue,
+        ));
+  }
+
+  Widget _getPetIcon(String type ) {
+    Widget petIcon;
+    if (type == "cat") {
+      petIcon = IconButton(
+        icon: Icon(Pets.cat),
+        onPressed: () {},
+      );
+    } else if (type == "dog") {
+      petIcon = IconButton(
+        icon: Icon(Pets.dog_seating),
+        onPressed: () {},
+      );
+
+    } else {
+      petIcon = IconButton(
+        icon: Icon(Icons.pets),
+        onPressed: () {},
+      );
+    }
+    return petIcon;
+  }
+
 }
+
+class AlertDialogWidget extends StatefulWidget {
+  String petName;
+  String character = '';
+
+  @override
+  _AlertDialogWidgetState createState() => _AlertDialogWidgetState();
+}
+
+class _AlertDialogWidgetState extends State<AlertDialogWidget> {
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+      child: ListBody(
+        children: <Widget>[
+          TextField(
+            autofocus: true,
+            decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "Enter a Pet Name"),
+            onChanged: (text) => widget.petName = text,
+          ),
+          RadioListTile(
+            title: Text("Cat"),
+            value: "cat",
+            groupValue: widget.character,
+            onChanged: (String value) {
+              setState(() { widget.character = value; });
+            },
+          ),
+          RadioListTile(
+            title: Text("Dog"),
+            value: "dog",
+            groupValue: widget.character,
+            onChanged: (String value) {
+              setState(() { widget.character = value; });
+            },
+          ),
+          RadioListTile(
+            title: Text("Other"),
+            value: "other",
+            groupValue: widget.character,
+            onChanged: (String value) {
+              setState(() { widget.character = value; });
+            },
+          )
+        ],
+      ),
+    );
+  }
+}
+

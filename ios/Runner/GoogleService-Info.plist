@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>115920730347-9v79o88lsbreasvq65g6k2g21g6pu7np.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.115920730347-9v79o88lsbreasvq65g6k2g21g6pu7np</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB_Ht4W5abT2ktQhy3mPWarpruvePWBzow</string>
+	<key>GCM_SENDER_ID</key>
+	<string>115920730347</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.raywenderlich.petmedical</string>
+	<key>PROJECT_ID</key>
+	<string>petmedical-9a2b0</string>
+	<key>STORAGE_BUCKET</key>
+	<string>petmedical-9a2b0.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:115920730347:ios:e4195d505fa2c0d7a5e6ae</string>
+	<key>DATABASE_URL</key>
+	<string>https://petmedical-9a2b0.firebaseio.com</string>
+</dict>
+</plist>
