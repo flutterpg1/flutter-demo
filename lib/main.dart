@@ -8,7 +8,10 @@ class Nav2App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: HomeScreen(),
+      routes: {
+        '/': (context) => HomeScreen(),
+        '/details': (context) => DetailScreen(),
+      },
     );
   }
 }
@@ -22,11 +25,9 @@ class HomeScreen extends StatelessWidget {
         child: FlatButton(
           child: Text('View Details'),
           onPressed: () {
-            Navigator.push(
+            Navigator.pushNamed(
               context,
-              MaterialPageRoute(builder: (context) {
-                return DetailScreen();
-              }),
+              '/details',
             );
           },
         ),
