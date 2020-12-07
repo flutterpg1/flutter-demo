@@ -1,196 +1,277 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'dynamicWidget.dart';
 
 void main() {
-  runApp(SampleApp());
+  runApp(new MyApp());
 }
 
-class SampleApp extends StatelessWidget {
-  // This widget is the root of your application.
+class MyApp extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() {
+    return new MyAppScreenMode();
+  }
+}
+
+class MyData {
+  String name = '';
+  String phone = '';
+  String email = '';
+  String age = '';
+}
+
+class MyAppScreenMode extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Sample App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: SampleAppPage(),
-    );
-  }
-}
-
-class SampleAppPage extends StatefulWidget {
-  SampleAppPage({Key key}) : super(key: key);
-
-  @override
-  _SampleAppPageState createState() => _SampleAppPageState();
-}
-
-class _SampleAppPageState extends State<SampleAppPage> {
-  List<DynamicWidget> dynamicList = [];
-
-  List<String> price = [];
-
-  List<String> Product = [];
-  addDynamic() {
-    // if (Product.length != 0) {
-    //   floatingIcon = new Icon(Icons.add);
-    // }
-    setState(() {});
-    if (dynamicList.length >= 10) {
-      return;
-    }
-    dynamicList.add(new DynamicWidget());
-  }
-  submitData() {
-    // floatingIcon = new Icon(Icons.arrow_back);
-    Product = [];
-    price = [];
-    dynamicList.forEach((widget) => Product.add(widget.product.text));
-    dynamicList.forEach((widget) => price.add(widget.Price.text));
-    setState(() {});
-    print(Product.length);
-    // sendData();
-  }
-
-  Widget submitButton = new Container(
-    child: new RaisedButton(
-      // onPressed:submitData,
-      child: new Padding(
-        padding: new EdgeInsets.all(16.0),
-        child: new Text('Submit Data'),
-      ),
-    ),
-  );
-  @override
-  Widget build(BuildContext context) {
-    Widget dynamicTextField = new Flexible(
-      flex: 2,
-      child: new ListView.builder(
-        itemCount: dynamicList.length,
-        itemBuilder: (_, index) => dynamicList[index],
-      ),
-    );
-    Widget result = new Flexible(
-        flex: 1,
-        child: new Card(
-          child: ListView.builder(
-            itemCount: Product.length,
-            itemBuilder: (_, index) {
-              return new Padding(
-                padding: new EdgeInsets.all(10.0),
-                child: new Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    new Container(
-                      margin: new EdgeInsets.only(left: 10.0),
-                      child: new Text(
-                          "${index + 1} : ${Product[index]}                       ${price[index]}"),
-                    ),
-                    new Divider()
-                  ],
-                ),
-              );
-            },
-          ),
-        ));
-    return new Scaffold(
-      appBar: AppBar(title: Text('Dynamic form')),
-      drawer: Drawer(child: Text('dr'),),
-        body: new Container(
-          child: new Column(children: <Widget>[
-            Product.length == 0 ? dynamicTextField : result,
-            Product.length == 0 ? submitButton : new Container(),
-          ]),
+    return new MaterialApp(
+        theme: new ThemeData(
+          primarySwatch: Colors.lightGreen,
         ),
-        floatingActionButton: new FloatingActionButton(
-            onPressed: addDynamic, child: new Icon(Icons.add)));
+        home: new Scaffold(
+          appBar: new AppBar(
+            title: new Text('Steppers'),
+          ),
+          body: new StepperBody(),
+        ));
   }
 }
 
-class MyApp extends StatelessWidget {
-  // This widget is the root of your application.
+class StepperBody extends StatefulWidget {
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Fluttereee Demo 123ss',
-      theme: ThemeData(
-        primarySwatch: Colors.green,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
-      home: MyHomePage(title: 'Flutter11 Demo Home Page'),
-    );
-  }
+  _StepperBodyState createState() => new _StepperBodyState();
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
+class _StepperBodyState extends State<StepperBody> {
+  int currStep = 0;
+  static var _focusNode = new FocusNode();
+  GlobalKey<FormState> _formKey = new GlobalKey<FormState>();
+  static MyData data = new MyData();
 
   @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      _counter++;
+  void initState() {
+    super.initState();
+    _focusNode.addListener(() {
+      setState(() {});
+      print('Has focus: $_focusNode.hasFocus');
     });
   }
 
-  final _formKey = GlobalKey<FormState>();
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    super.dispose();
+  }
+
+  List<Step> steps = [
+    new Step(
+        title: const Text('Name'),
+        //subtitle: const Text('Enter your name'),
+        isActive: true,
+        //state: StepState.error,
+        state: StepState.indexed,
+        content: new TextFormField(
+          focusNode: _focusNode,
+          keyboardType: TextInputType.text,
+          autocorrect: false,
+          onSaved: (String value) {
+            data.name = value;
+          },
+          maxLines: 1,
+          //initialValue: 'Aseem Wangoo',
+          validator: (value) {
+            if (value.isEmpty || value.length < 1) {
+              return 'Please enter name';
+            }
+          },
+          decoration: new InputDecoration(
+              labelText: 'Enter your name',
+              hintText: 'Enter a name',
+              //filled: true,
+              icon: const Icon(Icons.person),
+              labelStyle:
+                  new TextStyle(decorationStyle: TextDecorationStyle.solid)),
+        )),
+    new Step(
+        title: const Text('Phone'),
+        //subtitle: const Text('Subtitle'),
+        isActive: true,
+        //state: StepState.editing,
+        state: StepState.indexed,
+        content: new TextFormField(
+          keyboardType: TextInputType.phone,
+          autocorrect: false,
+          // validator: (value) {
+          //   if (value.isEmpty || value.length < 10) {
+          //     return 'Please enter valid number';
+          //   }
+          // },
+          onSaved: (String value) {
+            data.phone = value;
+          },
+          maxLines: 1,
+          decoration: new InputDecoration(
+              labelText: 'Enter your number',
+              hintText: 'Enter a number',
+              icon: const Icon(Icons.phone),
+              labelStyle:
+                  new TextStyle(decorationStyle: TextDecorationStyle.solid)),
+        )),
+    new Step(
+        title: const Text('Email'),
+        // subtitle: const Text('Subtitle'),
+        isActive: true,
+        state: StepState.indexed,
+        // state: StepState.disabled,
+        content: new TextFormField(
+          keyboardType: TextInputType.emailAddress,
+          autocorrect: false,
+          validator: (value) {
+            if (value.isEmpty || !value.contains('@')) {
+              return 'Please enter valid email';
+            }
+          },
+          onSaved: (String value) {
+            data.email = value;
+          },
+          maxLines: 1,
+          decoration: new InputDecoration(
+              labelText: 'Enter your email',
+              hintText: 'Enter a email address',
+              icon: const Icon(Icons.email),
+              labelStyle:
+                  new TextStyle(decorationStyle: TextDecorationStyle.solid)),
+        )),
+    new Step(
+        title: const Text('Age'),
+        // subtitle: const Text('Subtitle'),
+        isActive: true,
+        state: StepState.indexed,
+        content: new TextFormField(
+          keyboardType: TextInputType.number,
+          autocorrect: false,
+          validator: (value) {
+            if (value.isEmpty || value.length > 2) {
+              return 'Please enter valid age';
+            }
+          },
+          maxLines: 1,
+          onSaved: (String value) {
+            data.age = value;
+          },
+          decoration: new InputDecoration(
+              labelText: 'Enter your age',
+              hintText: 'Enter age',
+              icon: const Icon(Icons.explicit),
+              labelStyle:
+                  new TextStyle(decorationStyle: TextDecorationStyle.solid)),
+        )),
+    // new Step(
+    //     title: const Text('Fifth Step'),
+    //     subtitle: const Text('Subtitle'),
+    //     isActive: true,
+    //     state: StepState.complete,
+    //     content: const Text('Enjoy Step Fifth'))
+  ];
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        child: Column(mainAxisAlignment: MainAxisAlignment.start, children: [
-          Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                TextFormField(
-                  decoration: const InputDecoration(
-                    hintText: 'Enter your email',
-                  ),
-                  validator: (value) {
-                    if (value.isEmpty) {
-                      return 'Please enter some text';
-                    }
-                    return null;
+    void showSnackBarMessage(String message,
+        [MaterialColor color = Colors.red]) {
+      Scaffold
+          .of(context)
+          .showSnackBar(new SnackBar(content: new Text(message)));
+    }
+
+    void _submitDetails() {
+      final FormState formState = _formKey.currentState;
+
+      if (!formState.validate()) {
+        showSnackBarMessage('Please enter correct data');
+      } else {
+        formState.save();
+        print("Name: ${data.name}");
+        print("Phone: ${data.phone}");
+        print("Email: ${data.email}");
+        print("Age: ${data.age}");
+
+        showDialog(
+            context: context,
+            child: new AlertDialog(
+              title: new Text("Details"),
+              //content: new Text("Hello World"),
+              content: new SingleChildScrollView(
+                child: new ListBody(
+                  children: <Widget>[
+                    new Text("Name : " + data.name),
+                    new Text("Phone : " + data.phone),
+                    new Text("Email : " + data.email),
+                    new Text("Age : " + data.age),
+                  ],
+                ),
+              ),
+              actions: <Widget>[
+                new FlatButton(
+                  child: new Text('OK'),
+                  onPressed: () {
+                    Navigator.of(context).pop();
                   },
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      // Validate will return true if the form is valid, or false if
-                      // the form is invalid.
-                      if (_formKey.currentState.validate()) {
-                        // Process data.
-                      }
-                    },
-                    child: Text('Submit'),
-                  ),
-                ),
               ],
-            ),
-          )
-        ]),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+            ));
+      }
+    }
+
+    return new Container(
+        child: new Form(
+      key: _formKey,
+      child: new ListView(children: <Widget>[
+        new Stepper(
+          steps: steps,
+          type: StepperType.vertical,
+          currentStep: this.currStep,
+          onStepContinue: () {
+            setState(() {
+              if (currStep < steps.length - 1) {
+                currStep = currStep + 1;
+              } else {
+                currStep = 0;
+              }
+              // else {
+              // Scaffold
+              //     .of(context)
+              //     .showSnackBar(new SnackBar(content: new Text('$currStep')));
+
+              // if (currStep == 1) {
+              //   print('First Step');
+              //   print('object' + FocusScope.of(context).toStringDeep());
+              // }
+
+              // }
+            });
+          },
+          onStepCancel: () {
+            setState(() {
+              if (currStep > 0) {
+                currStep = currStep - 1;
+              } else {
+                currStep = 0;
+              }
+            });
+          },
+          onStepTapped: (step) {
+            setState(() {
+              currStep = step;
+            });
+          },
+        ),
+        new RaisedButton(
+          child: new Text(
+            'Save details',
+            style: new TextStyle(color: Colors.white),
+          ),
+          onPressed: _submitDetails,
+          color: Colors.blue,
+        ),
+      ]),
+    ));
   }
 }
