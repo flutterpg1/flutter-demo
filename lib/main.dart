@@ -12,7 +12,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    createRecord();
     return Scaffold(
       appBar: AppBar(
         title: Text('FireStore Demo'),
